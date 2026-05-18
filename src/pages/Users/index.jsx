@@ -8,7 +8,7 @@ import { ConfirmModal } from '../../components/molecules/ConfirmModal';
 import { SearchBar } from '../../components/molecules/SearchBar';
 import { IconCheck, IconX } from '../../components/atoms/Icons';
 import TableRow from '../../components/molecules/TableRow';
-
+import UserDetailDrawer from './UserDetailDrawer';
 
 export default function Users() {
   const {
@@ -18,6 +18,7 @@ export default function Users() {
   } = useUsers();
 
   const [confirmTarget, setConfirmTarget] = useState(null);
+  const [detailUserId, setDetailUserId] = useState(null);
 
   const tabs = [
     { id: 'All',           label: 'All',           count: counts.All },
@@ -80,7 +81,7 @@ export default function Users() {
                 {filtered.map((u) => {
                   const name = `${u.firstName || ''} ${u.lastName || ''}`.trim();
                   return (
-                    <TableRow key={u.id}>
+                    <TableRow key={u.id} clickable onClick={() => setDetailUserId(u.id)}>
                       <td>
                         <div className="gx-table-name">
                           <Avatar name={name} size={34} />
@@ -102,9 +103,15 @@ export default function Users() {
                       <td className="gx-muted">{dateShort(u.createdAt)}</td>
                       <td>
                         <div className="gx-row-actions">
+                          <button
+                            className="gx-btn gx-btn-secondary gx-btn-sm"
+                            onClick={(e) => { e.stopPropagation(); setDetailUserId(u.id); }}
+                          >
+                            View
+                          </button>
                           {u.isBanned
-                            ? <button className="gx-btn gx-btn-primary gx-btn-sm" onClick={() => setConfirmTarget({ user: u, action: 'unban' })}>Unban</button>
-                            : <button className="gx-btn gx-btn-danger-soft gx-btn-sm" onClick={() => setConfirmTarget({ user: u, action: 'ban' })}>Ban</button>}
+                            ? <button className="gx-btn gx-btn-primary gx-btn-sm" onClick={(e) => { e.stopPropagation(); setConfirmTarget({ user: u, action: 'unban' }); }}>Unban</button>
+                            : <button className="gx-btn gx-btn-danger-soft gx-btn-sm" onClick={(e) => { e.stopPropagation(); setConfirmTarget({ user: u, action: 'ban' }); }}>Ban</button>}
                         </div>
                       </td>
                     </TableRow>
@@ -118,6 +125,13 @@ export default function Users() {
 
       {confirmTarget && modal && (
         <ConfirmModal {...modal} onClose={() => setConfirmTarget(null)} onConfirm={handleConfirm} loading={actionLoading} />
+      )}
+
+      {detailUserId && (
+        <UserDetailDrawer
+          userId={detailUserId}
+          onClose={() => setDetailUserId(null)}
+        />
       )}
     </div>
   );

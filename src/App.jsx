@@ -9,7 +9,8 @@ import Reports from './pages/Reports/index';
 import Categories from './pages/Categories/index';
 import Reviews from './pages/Reviews/index';
 import PrivateRoute from './routes/PrivateRoute';
-
+import Feedback from './pages/Feedback/index';
+import Notifications from './pages/Notifications/index';
 export default function App() {
   return (
     <BrowserRouter>
@@ -28,6 +29,8 @@ export default function App() {
           <Route path="reports"      element={<Reports />} />
           <Route path="categories"   element={<Categories />} />
           <Route path="reviews"      element={<Reviews />} />
+          <Route path="feedback"     element={<Feedback />} />
+        <Route path="notifications" element={<Notifications />} />
         </Route>
       </Routes>
     </BrowserRouter>

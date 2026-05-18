@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import { getBookings } from '../../network/api/admin/bookings';
+import { getBookings, cancelBooking } from '../../network/api/admin/bookings';
 
 export function useBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
   const [status, setStatus] = useState('All');
   const [search, setSearch] = useState('');
 
@@ -36,5 +37,26 @@ export function useBookings() {
     return [...arr].sort((a, b) => new Date(b.scheduledAt || b.date || 0) - new Date(a.scheduledAt || a.date || 0));
   }, [bookings, status, search]);
 
-  return { bookings, filtered, loading, reportedCount, status, setStatus, search, setSearch };
+  const handleCancel = useCallback(async (bookingId, reason) => {
+    setActionLoading(true);
+    try {
+      await cancelBooking(bookingId, reason);
+      setBookings((prev) =>
+        prev.map((b) => (b.id === bookingId ? { ...b, status: 'Cancelled' } : b))
+      );
+      toast.success('Booking cancelled successfully');
+      return true;
+    } catch {
+      toast.error('Failed to cancel booking');
+      return false;
+    } finally {
+      setActionLoading(false);
+    }
+  }, []);
+
+  return {
+    bookings, filtered, loading, actionLoading,
+    reportedCount, status, setStatus,
+    search, setSearch, handleCancel,
+  };
 }

@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { IconHome, IconClipboard, IconUsers, IconCalendar, IconFlagNav, IconTag, IconStarNav, IconLogout } from '../atoms/Icons';
+import { IconHome, IconClipboard, IconUsers, IconCalendar, IconFlagNav, IconTag, IconStarNav, IconLogout, IconFeedback, IconBell } from '../atoms/Icons';
 
 function GoFixLogo({ collapsed }) {
   return (
@@ -23,15 +23,16 @@ function GoFixLogo({ collapsed }) {
   );
 }
 
-
 const NAV = [
   { id: 'dashboard',    label: 'Dashboard',    icon: <IconHome />,      to: '/dashboard' },
   { id: 'applications', label: 'Applications', icon: <IconClipboard />, to: '/applications', badge: true },
   { id: 'users',        label: 'Users',        icon: <IconUsers />,     to: '/users' },
   { id: 'bookings',     label: 'Bookings',     icon: <IconCalendar />,  to: '/bookings' },
   { id: 'categories',   label: 'Categories',   icon: <IconTag />,       to: '/categories' },
-  { id: 'reviews',      label: 'Reviews',      icon: <IconStarNav />,      to: '/reviews' },
-  { id: 'reports',      label: 'Reports',      icon: <IconFlagNav />,      to: '/reports' },
+  { id: 'reviews',      label: 'Reviews',      icon: <IconStarNav />,   to: '/reviews' },
+  { id: 'reports',      label: 'Reports',      icon: <IconFlagNav />,   to: '/reports' },
+  { id: 'feedback',     label: 'Feedback',     icon: <IconFeedback />,  to: '/feedback' },
+  { id: 'notifications', label: 'Notifications', icon: <IconBell />,     to: '/notifications' },
 ];
 
 function getInitials(name = '') {

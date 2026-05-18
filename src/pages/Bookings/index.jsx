@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useBookings } from './useBookings';
 import { dateShort } from '../../utils/formatters';
 import { Avatar } from '../../components/atoms/Avatar';
@@ -7,9 +8,54 @@ import { SearchBar } from '../../components/molecules/SearchBar';
 import { IconFlag } from '../../components/atoms/Icons';
 import TableRow from '../../components/molecules/TableRow';
 
+const CANCELLABLE = ['Pending', 'Accepted', 'OnTheWay', 'InProgress'];
+
+function CancelModal({ booking, onClose, onConfirm, loading }) {
+  const [reason, setReason] = useState('');
+  const trimmed = reason.trim();
+
+  return (
+    <div className="gx-modal-backdrop" onClick={onClose}>
+      <div className="gx-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="gx-modal-title">Cancel booking</div>
+        <div className="gx-modal-desc">
+          Cancelling <b>{booking.serviceName || booking.service}</b> for <b>{booking.customer?.name || booking.customerName}</b>. Both the customer and professional will be notified.
+        </div>
+        <textarea
+          className="gx-textarea"
+          placeholder="Reason for cancellation (required)…"
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          autoFocus
+        />
+        <div className="gx-modal-actions">
+          <button className="gx-btn gx-btn-ghost" onClick={onClose} disabled={loading}>Cancel</button>
+          <button
+            className="gx-btn gx-btn-danger"
+            onClick={() => onConfirm(trimmed)}
+            disabled={loading || trimmed.length < 5}
+          >
+            {loading ? 'Cancelling…' : 'Cancel booking'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Bookings() {
-  const { filtered, loading, reportedCount, status, setStatus, search, setSearch } = useBookings();
+  const {
+    filtered, loading, actionLoading,
+    reportedCount, status, setStatus,
+    search, setSearch, handleCancel,
+  } = useBookings();
+
+  const [cancelTarget, setCancelTarget] = useState(null);
+
+  async function handleConfirmCancel(reason) {
+    const ok = await handleCancel(cancelTarget.id, reason);
+    if (ok) setCancelTarget(null);
+  }
 
   return (
     <div className="gx-page">
@@ -54,7 +100,7 @@ export default function Bookings() {
               <thead>
                 <tr>
                   <th>Customer</th><th>Professional</th><th>Service</th>
-                  <th>Date</th><th>Status</th><th>Price</th><th>Flag</th>
+                  <th>Date</th><th>Status</th><th>Price</th><th>Flag</th><th></th>
                 </tr>
               </thead>
               <tbody>
@@ -62,6 +108,7 @@ export default function Bookings() {
                   const customerName = b.customerName || b.customer?.name || '—';
                   const professionalName = b.professionalName || b.professional?.name || '—';
                   const isReported = b.isReported || b.reported || b.hasReport;
+                  const canCancel = CANCELLABLE.includes(b.status);
                   return (
                     <TableRow key={b.id || b.bookingId}>
                       <td>
@@ -85,6 +132,18 @@ export default function Bookings() {
                           ? <span className="gx-flag" title="Reported"><IconFlag /></span>
                           : <span className="gx-muted">—</span>}
                       </td>
+                      <td>
+                        <div className="gx-row-actions">
+                          {canCancel && (
+                            <button
+                              className="gx-btn gx-btn-danger-soft gx-btn-sm"
+                              onClick={() => setCancelTarget(b)}
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </div>
+                      </td>
                     </TableRow>
                   );
                 })}
@@ -93,6 +152,15 @@ export default function Bookings() {
           </div>
         )}
       </div>
+
+      {cancelTarget && (
+        <CancelModal
+          booking={cancelTarget}
+          onClose={() => setCancelTarget(null)}
+          onConfirm={handleConfirmCancel}
+          loading={actionLoading}
+        />
+      )}
     </div>
   );
 }
