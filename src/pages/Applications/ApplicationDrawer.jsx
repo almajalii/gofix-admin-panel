@@ -5,7 +5,7 @@ import { Badge } from '../../components/atoms/Badge';
 import { IconCheck, IconX } from '../../components/atoms/Icons';
 import TableRow from '../../components/molecules/TableRow';
 import RejectModal from './RejectModal';
-
+import { useState, useEffect } from 'react';
 // ── Application Drawer ────────────────────────────────────────────────────────
 export default function ApplicationDrawer({ app, onClose, onApprove, onReject, loading }) {
   const [rejectOpen, setRejectOpen] = useState(false);

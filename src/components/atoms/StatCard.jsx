@@ -1,19 +1,20 @@
-export default function StatCard({ label, value, icon: Icon, primary = false }) {
+export default function StatCard({ label, value, icon: Icon, primary = false, danger = false }) {
   return (
-    <div className={`rounded-2xl p-6 flex flex-col gap-3 ${
-      primary
-        ? 'bg-[#ED8936] text-white'
-        : 'bg-white border border-[#E7E2D5]'
-    }`}>
-      <div className="flex items-center justify-between">
-        <p className={`text-sm font-medium ${primary ? 'text-white/80' : 'text-[#5C6675]'}`}>
+    <div
+      className={`gx-stat-card${primary ? ' is-primary' : ''}`}
+      style={danger ? { borderColor: 'var(--red)', background: 'var(--red-soft)' } : {}}
+    >
+      <div className="gx-stat-top">
+        <div className="gx-stat-label" style={danger ? { color: 'var(--red)' } : {}}>
           {label}
-        </p>
-        {Icon && <Icon size={20} className={primary ? 'text-white/80' : 'text-[#5C6675]'} />}
+        </div>
+        <div className="gx-stat-icon" style={danger ? { background: 'var(--red-soft)', color: 'var(--red)' } : {}}>
+          {Icon && <Icon size={18} />}
+        </div>
       </div>
-      <p className={`text-3xl font-extrabold tracking-tight ${primary ? 'text-white' : 'text-[#0E1A2B]'}`}>
+      <div className="gx-stat-value" style={danger ? { color: 'var(--red)' } : {}}>
         {value ?? '—'}
-      </p>
+      </div>
     </div>
   );
 }

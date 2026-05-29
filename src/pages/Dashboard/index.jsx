@@ -77,7 +77,7 @@ export default function Dashboard() {
     { label: 'Total Customers',      value: stats?.totalCustomers,      icon: Users },
     { label: 'Total Bookings',       value: stats?.totalBookings,       icon: CalendarDays },
     { label: 'Completed Bookings',   value: stats?.completedBookings,   icon: CalendarDays },
-    { label: 'Reported Bookings',    value: stats?.reportedBookings,    icon: Flag },
+    { label: 'Reported Bookings',    value: stats?.reportedBookings,    icon: Flag, danger: true },
   ];
 
   return (
@@ -88,15 +88,15 @@ export default function Dashboard() {
       />
 
       {loading ? (
-        <div className="gx-stat-grid">
+        <div className="gx-stat-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="gx-stat-card" style={{ height: 130, opacity: 0.3 }} />
           ))}
         </div>
       ) : (
-        <div className="gx-stat-grid">
+        <div className="gx-stat-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
           {cards.map((c) => (
-            <StatCard key={c.label} label={c.label} value={c.value} icon={c.icon} primary={c.primary} />
+            <StatCard key={c.label} label={c.label} value={c.value} icon={c.icon} primary={c.primary} danger={c.danger} />
           ))}
         </div>
       )}

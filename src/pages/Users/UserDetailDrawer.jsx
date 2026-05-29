@@ -5,6 +5,7 @@ import { Badge } from '../../components/atoms/Badge';
 import { IconX } from '../../components/atoms/Icons';
 import { dateShort } from '../../utils/formatters';
 import { toast } from 'react-toastify';
+import BookingDetailDrawer from '../Bookings/BookingDetailDrawer';
 
 function StatBox({ label, value }) {
   return (
@@ -21,6 +22,7 @@ function StatBox({ label, value }) {
 export default function UserDetailDrawer({ userId, onClose }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [detailBookingId, setDetailBookingId] = useState(null);
 
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -38,6 +40,12 @@ export default function UserDetailDrawer({ userId, onClose }) {
 
   return (
     <>
+      {detailBookingId && (
+        <BookingDetailDrawer
+          bookingId={detailBookingId}
+          onClose={() => setDetailBookingId(null)}
+        />
+      )}
       <div className="gx-drawer-backdrop" onClick={onClose} />
       <div className="gx-drawer">
         {/* Head */}
@@ -107,11 +115,19 @@ export default function UserDetailDrawer({ userId, onClose }) {
                         background: 'var(--surface)', border: '1px solid var(--line)',
                         borderRadius: 'var(--radius)', padding: '10px 14px',
                       }}>
-                        <div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 13, fontWeight: 600 }}>{b.serviceName}</div>
                           <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>{b.professional?.name} · {dateShort(b.scheduledDate)}</div>
                         </div>
-                        <Badge status={b.status} sm />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                          <Badge status={b.status} sm />
+                          <button
+                            className="gx-btn gx-btn-secondary gx-btn-sm"
+                            onClick={() => setDetailBookingId(b.id)}
+                          >
+                            View
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
