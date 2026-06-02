@@ -73,7 +73,7 @@ export default function Users() {
             <table className="gx-table">
               <thead>
                 <tr>
-                  <th>Name</th><th>Email</th><th>Phone</th><th>Role</th>
+                  <th>Name</th><th>Email</th><th>Role</th>
                   <th>Verified</th><th>Status</th><th>Joined</th><th></th>
                 </tr>
               </thead>
@@ -87,12 +87,10 @@ export default function Users() {
                           <Avatar name={name} size={34} />
                           <div className="gx-table-name-stack">
                             <div>{name}</div>
-                            <div className="gx-table-name-sub gx-muted">{u.id}</div>
                           </div>
                         </div>
                       </td>
                       <td className="gx-muted">{u.email}</td>
-                      <td className="gx-muted">{u.phone || '—'}</td>
                       <td><Badge status={u.role} sm /></td>
                       <td>
                         {u.isVerified
